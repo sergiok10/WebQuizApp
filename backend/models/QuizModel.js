@@ -8,7 +8,11 @@ const QuizSchema = new mongoose.Schema({
     questions: {
         type: Array,
         required: true
-    }
+    },
+    description: {
+        type: String,
+        required: true
+    },
 }, { timestamps: true });
 
 const Quiz = mongoose.model('Quiz', QuizSchema);

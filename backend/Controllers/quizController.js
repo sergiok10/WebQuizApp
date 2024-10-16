@@ -19,10 +19,12 @@ const getQuizzes = async (req, res) => {
 /**********************************************Create New Application *******************************************/
 const addNewQuiz = async (req, res) => {
     // Grab Data from the Request Body
-    const { quizName, questions } = req.body;
+    const { quizName, questions, description } = req.body;
+
+    console.log(req.body);
     
     // Check the fields are not empty
-    if (!quizName || !questions) {
+    if (!quizName || !questions || !description) {
         return res.status(400).json({ msg: 'All fields are required' });
     }
 
@@ -43,7 +45,7 @@ const addNewQuiz = async (req, res) => {
 
     try {
         // Create the quiz first
-        const quiz = await Quiz.create({ quizName, questions: [] });
+        const quiz = await Quiz.create({ quizName, questions: [], description });
 
         // Create questions and add the quiz ID to each question
         const questionsArray = [];
@@ -113,10 +115,10 @@ const updateQuiz = async (req, res) => {
     }
 
     // Grab Data from the Request Body
-    const { quizName, questions } = req.body;
+    const { quizName, questions, description } = req.body;
     
     // Check the fields are not empty
-    if (!quizName || !questions) {
+    if (!quizName || !questions || !description) {
         return res.status(400).json({ msg: 'All fields are required' });
     }
 
@@ -173,6 +175,7 @@ const updateQuiz = async (req, res) => {
 
         // Update the quiz
         quiz.quizName = quizName;
+        quiz.description = description;
         quiz.questions = updatedQuestionsArray.map(q => q._id);
         await quiz.save();
 
