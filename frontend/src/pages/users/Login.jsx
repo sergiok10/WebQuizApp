@@ -1,8 +1,17 @@
 import { useState } from 'react';
 import Alert from '../../Components/Alert';
 import { loginUser } from '../../controllers/usersController';
+import { UserContext } from '../../contexts/UserContext';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+
+    // User user context 
+    const { user, setUser } = useContext(UserContext);
+
+    //Use navigate hook
+    const navigate = useNavigate();
 
     //Error State
     const [error, setError] = useState(null);
@@ -15,7 +24,12 @@ const LoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try{
+          //Login the User
           await loginUser(email, password);
+          //Update the User State
+          setUser({ email });
+          //Navigate to dashboard
+          navigate('/dashboard');
         }
         catch(error){
           setError(error.message);
@@ -27,10 +41,10 @@ const LoginPage = () => {
       {/* Logo section */}
       <div className="w-full md:w-2/3 bg-green-500 flex flex-col items-center justify-center p-8">
         <div className="text-9xl md:text-[200px] text-black">
-          <i className="fa-solid fa-house-medical-circle-check"></i>
+          <i className="fa-solid fa-brain"></i>
         </div>
         <h2 className="text-xl md:text-2xl text-center font-semibold text-black mt-4">
-          Unlock simplicity in your rental journey!
+            Unlock Knowledge, One Quiz at a Time!
         </h2>
       </div>
       
