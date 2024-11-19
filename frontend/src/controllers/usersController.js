@@ -18,9 +18,6 @@ const loginUser = async (email, password) => {
         throw Error(data.error);
     }
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('email', data.email);
-
     return data;
 }
 
@@ -50,10 +47,25 @@ const registerUser = async (email, password, passwordConfirm) => {
         throw Error(data.error);
     }
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('email', data.email);
+    return data;
+}
+
+const updateHighscore = async (quizId, score) => {
+    const res = await fetch('/api/users/update-highscore', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+         },
+        body: JSON.stringify({ quizId, score }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw Error(data.error);
+    }
 
     return data;
 }
 
-export { loginUser, registerUser };
+export { loginUser, registerUser, updateHighscore };

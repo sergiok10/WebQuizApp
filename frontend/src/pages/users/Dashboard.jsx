@@ -27,7 +27,6 @@ const Dashboard = () => {
       setQuizzes(data);
       //remove the loading
       setLoading(false);
-      console.log(data);
     }, 500);
   }, []);
 

@@ -13,8 +13,6 @@ const Register = () => {
   //Use navigate hook
   const navigate = useNavigate();
 
-  console.log(user);
-
 
   //Error State
   const [error, setError] = useState(null);
@@ -31,13 +29,13 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await registerUser(
+      const data = await registerUser(
         formData.email,
         formData.password,
         formData.passwordConfirm
       );
       //Update the User State
-      setUser({ email: formData.email });
+      setUser({ email: formData.email, password: formData.password, role: data.role, token: data.token });
       //Navigate to dashboard
       navigate("/dashboard");
     } catch (error) {

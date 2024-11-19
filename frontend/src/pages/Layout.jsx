@@ -8,15 +8,12 @@ const Layout = () => {
   const { user, setUser } = useContext(UserContext);
 
   const handleLogout = () => {
-    if(confirm("Confirm Logout?")) {
-      setUser({ email: null });
-      localStorage.removeItem("email");
+    if (confirm("Confirm Logout?")) {
+      setUser({ email: null, role: null, token: null, password: null });
       navigate("/");
     }
-    
   };
 
-  console.log(user);
 
   return (
     <>
@@ -35,11 +32,15 @@ const Layout = () => {
                 to="/create"
                 className="fa-solid fa-circle-plus nav-link"
               ></Link>
-              <Link
-                title="Dashboard"
-                to="/dashboard"
-                className="fa-solid fa-circle-user nav-link"
-              ></Link>
+
+              {user.role === "Admin" && (
+                <Link
+                  title="Dashboard"
+                  to="/dashboard"
+                  className="fa-solid fa-circle-user nav-link"
+                ></Link>
+              )}
+
               <button
                 title="Logout"
                 onClick={handleLogout}
