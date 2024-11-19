@@ -4,23 +4,38 @@ import Question from '../models/QuestionModel.js';
 import Quiz from '../models/QuizModel.js';
 
 /**********************************************Get All Applications of a specific user  *********************************************/
-const getAllQuestionsOfQuiz = async (req, res) => {
+    // Fetch all questions of a specific quiz
+    const getAllQuestionsOfQuiz = async (req, res) => {
+        // Check if the ID is valid
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+        }
+
+        const quiz = await Quiz.findById(req.params.id);
+        
+        if (!quiz) {
+            return res.status(404).json({ error: "Quiz not found" });
+        }
+
+        const questions = {};
+
+        //make a loop over all the questions of the quiz
+        for (const question of quiz.questions) {
+            const question_ = await Question.findById(question);
+            if (!question_) {
+                return res.status(404).json({ error: "Question not found" });
+            }
+            questions[question] = question_;
+        }
+        
     
-    //check if the ID is valid
-    if(!mongoose.Types.ObjectId.isValid(req.params.quizId)){
-        return res.status(400).json({ error: 'Invalid ID' });
-    }
-    
-    //get all questions of a specific quiz
-    try{
-        const questions = await Question.find({quiz: req.params.quizId});
-        res.status(200).json(questions);
-    }
-    catch(error){
-        console.log(error);
+        try {
+        res.status(200).json({quiz: quiz, questions: questions});
+        } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
-    }
-}
+        }
+    };
 
 /**********************************************Create New Application *******************************************/
 const addQuestionToQuiz = async (req, res) => {

@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    highscores: [{
+        quizId: { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' },
+        score: { type: Number }
+    }]
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);

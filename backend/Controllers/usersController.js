@@ -68,7 +68,7 @@ const loginUser = async (req, res) => {
         //Create a JWT Token
         const token = createToken(user._id);
 
-        res.status(200).json({ email, token }); 
+        res.status(200).json({ email, token, role: user.role }); 
     }
     catch(error){
         console.log(err);
@@ -76,4 +76,47 @@ const loginUser = async (req, res) => {
     }
 }
 
-export {registerUser, loginUser};
+/***************************************** Update Highscore *****************************************/
+const updateHighscore = async (req, res) => {
+    const { quizId, score } = req.body;
+    const userId = req.user._id; // Assuming the JWT token has been verified and the user is available in `req.user`
+
+    if (!quizId || score === undefined) {
+        return res.status(400).json({ msg: 'Quiz ID and score are required' });
+    }
+
+    try {
+        // Find the user by their ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if the user has a highscore for the given quiz
+        const existingHighscore = user.highscores.find(highscore => highscore.quizId.toString() === quizId);
+
+        if (existingHighscore) {
+            console.log(existingHighscore.score);
+            console.log(score);
+            // If the user already has a highscore for this quiz, update it if the new score is higher
+            if (score > existingHighscore.score) {
+                existingHighscore.score = score;
+                await user.save();
+                return res.status(200).json({ msg: 'Highscore updated successfully!' });
+            } else {
+                return res.status(200).json({ msg: 'Score is not higher than the existing highscore' });
+            }
+        } else {
+            // If the user doesn't have a highscore for this quiz, add a new highscore
+            user.highscores.push({ quizId, score });
+            await user.save();
+            return res.status(200).json({ msg: 'Highscore added successfully!' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
+export {registerUser, loginUser, updateHighscore};

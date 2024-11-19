@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 //Get All Applications for specific user Route
-router.get('/', getAllQuestionsOfQuiz);
+router.get('/:id', getAllQuestionsOfQuiz);
 
 //Add a new Application Route
 router.post('/', auth, addQuestionToQuiz);

@@ -1,5 +1,6 @@
 import express from 'express';
-import { registerUser, loginUser } from '../Controllers/usersController.js';
+import { registerUser, loginUser, updateHighscore } from '../Controllers/usersController.js';
+import auth from '../Middlewares/auth.js';
 
 const router = express.Router();
 
@@ -8,5 +9,7 @@ router.post('/', registerUser);
 
 //login a User Route
 router.post('/login', loginUser);
+
+router.post('/update-highscore', auth, updateHighscore);
 
 export {router as userRoutes}; 

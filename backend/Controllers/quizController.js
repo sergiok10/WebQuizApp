@@ -3,28 +3,95 @@ import User from '../models/UserModel.js';
 import Quiz from '../models/QuizModel.js';
 import Question from '../models/QuestionModel.js';
 
-/**********************************************Get All Applications of a specific user  *********************************************/
+/********************************************** Get All Quizzes with User's Highscore *********************************************/
 const getQuizzes = async (req, res) => {
-    //get all quizzes
-    try{
+    const userId = req.user._id; // Assuming the JWT token has been verified and user is available in `req.user`
+
+    try {
+        // Find the user by their ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Get all quizzes
         const quizzes = await Quiz.find();
-        res.status(200).json(quizzes);
-    }
-    catch(error){
+
+        // Attach the user's highscore for each quiz
+        const quizzesWithHighscores = quizzes.map(quiz => {
+            // Find the user's highscore for the current quiz
+            const highscore = user.highscores.find(score => score.quizId.toString() === quiz._id.toString());
+            return {
+                ...quiz.toObject(), // Spread the quiz data
+                highscore: highscore ? highscore.score : null // Add the highscore if available
+            };
+        });
+
+        // Return the quizzes with the user's highscore
+        res.status(200).json(quizzesWithHighscores);
+    } catch (error) {
         console.log(error);
         res.status(500).json({ error: error.message });
     }
-}
+};
+
+
+const getQuizzesByCategoryAndDifficulty = async (req, res) => {
+    const userId = req.user._id; // Assuming the JWT token has been verified and user is available in `req.user`
+    const { category, difficulty } = req.params;
+
+    try {
+        // Find the user by their ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Build the query based on available filters
+        const query = {};
+
+        // Only add category filter if it's provided
+        if (category && category !== "ALL") {
+            query.category = category;
+        }
+
+        // Only add difficulty filter if it's provided
+        if (difficulty && difficulty !== "ALL") {
+            query.difficulty = difficulty;
+        }
+
+        // Get all quizzes that match the filters
+        const quizzes = await Quiz.find(query);
+
+        // Attach the user's highscore for each quiz
+        const quizzesWithHighscores = quizzes.map(quiz => {
+            const highscore = user.highscores.find(score => score.quizId.toString() === quiz._id.toString());
+            return {
+                ...quiz.toObject(), // Spread the quiz data
+                highscore: highscore ? highscore.score : null // Add the highscore if available
+            };
+        });
+
+        // Return the quizzes with the user's highscore
+        res.status(200).json(quizzesWithHighscores);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
 
 /**********************************************Create New Application *******************************************/
 const addNewQuiz = async (req, res) => {
     // Grab Data from the Request Body
-    const { quizName, questions, description } = req.body;
+    const { quizName, questions, description, duration, category, difficulty } = req.body;
 
     console.log(req.body);
     
     // Check the fields are not empty
-    if (!quizName || !questions || !description) {
+    if (!quizName || !questions || !description || !duration || !category || !difficulty) {
         return res.status(400).json({ msg: 'All fields are required' });
     }
 
@@ -45,7 +112,7 @@ const addNewQuiz = async (req, res) => {
 
     try {
         // Create the quiz first
-        const quiz = await Quiz.create({ quizName, questions: [], description });
+        const quiz = await Quiz.create({ quizName, questions: [], description, duration, category, difficulty });
 
         // Create questions and add the quiz ID to each question
         const questionsArray = [];
@@ -186,4 +253,4 @@ const updateQuiz = async (req, res) => {
     }
 };
 
-export { getQuizzes, addNewQuiz, deleteQuiz, updateQuiz };
+export { getQuizzes, getQuizzesByCategoryAndDifficulty, addNewQuiz, deleteQuiz, updateQuiz };
