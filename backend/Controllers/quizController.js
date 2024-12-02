@@ -37,6 +37,7 @@ const getQuizzes = async (req, res) => {
 
 
 const getQuizzesByCategoryAndDifficulty = async (req, res) => {
+    console.log("test")
     const userId = req.user._id; // Assuming the JWT token has been verified and user is available in `req.user`
     const { category, difficulty } = req.params;
 
@@ -182,10 +183,11 @@ const updateQuiz = async (req, res) => {
     }
 
     // Grab Data from the Request Body
-    const { quizName, questions, description } = req.body;
+    const { quizName, questions, description, duration, category, difficulty } = req.body;
     
+    console.log(req.body);
     // Check the fields are not empty
-    if (!quizName || !questions || !description) {
+    if (!quizName || !questions || !description || !duration || !category || !difficulty) {
         return res.status(400).json({ msg: 'All fields are required' });
     }
 
@@ -244,6 +246,9 @@ const updateQuiz = async (req, res) => {
         quiz.quizName = quizName;
         quiz.description = description;
         quiz.questions = updatedQuestionsArray.map(q => q._id);
+        quiz.duration = duration;
+        quiz.category = category;
+        quiz.difficulty = difficulty;
         await quiz.save();
 
         res.status(200).json({ success: 'Quiz Updated', quiz });
@@ -253,4 +258,19 @@ const updateQuiz = async (req, res) => {
     }
 };
 
-export { getQuizzes, getQuizzesByCategoryAndDifficulty, addNewQuiz, deleteQuiz, updateQuiz };
+const getQuizById = async (req, res) => {
+
+    try{
+        const quiz = await Quiz.findById(req.params.id).populate('questions');
+        if(!quiz){
+            return res.status(404).json({ error: 'Quiz Not Found' });
+        }
+        res.status(200).json(quiz);
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export { getQuizzes, getQuizzesByCategoryAndDifficulty, addNewQuiz, deleteQuiz, updateQuiz, getQuizById };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getQuizzes, getQuizzesByCategoryAndDifficulty, addNewQuiz, deleteQuiz, updateQuiz } from '../Controllers/quizController.js';
+import { getQuizzes, getQuizzesByCategoryAndDifficulty, addNewQuiz, deleteQuiz, updateQuiz, getQuizById } from '../Controllers/quizController.js';
 import auth from '../Middlewares/auth.js';
 
 const router = express.Router();
@@ -8,8 +8,13 @@ const router = express.Router();
 //Get All Applications for specific user Route
 router.get('/', auth, getQuizzes);
 
+//Get Quiz by ID Route
+router.get('/:id', auth, getQuizById);
+
 //Get Applications based on the Category and Difficulty
 router.get('/:category/:difficulty', auth, getQuizzesByCategoryAndDifficulty);
+
+
 
 //Add a new Application Route
 router.post('/', auth, addNewQuiz);

@@ -9,6 +9,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import AuthRoute from "./Components/AuthRoute";
 import UnauthorizedAccess from "./pages/UnauthorizedAccess";
 import QuizTakingPage from "./pages/quizzes/QuizTakingPage";
+import Update from "./pages/quizzes/Update";
 
 const App = () => {
   return (
@@ -30,6 +31,9 @@ const App = () => {
             </Route>
             <Route path="quiz/:id">
               <Route index element={<QuizTakingPage />} />
+            </Route>
+            <Route path="update/:id">
+              <Route index element={<Update />} />
             </Route>
           </Route>
         </Route>

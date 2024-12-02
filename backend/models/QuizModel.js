@@ -5,10 +5,10 @@ const QuizSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    questions: {
-        type: Array,
-        required: true
-    },
+    questions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Question'
+    }],
     description: {
         type: String,
         required: true

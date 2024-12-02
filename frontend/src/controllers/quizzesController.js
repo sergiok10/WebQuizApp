@@ -57,7 +57,7 @@
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${user.token}`,
+        "Authorization": `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify({ quizName, questions, description, duration, category, difficulty }),
     });
@@ -76,7 +76,7 @@
     const res = await fetch(`/api/quiz/${_id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${user.token}`,
+        "Authorization": `Bearer ${localStorage.getItem('token')}`,
       },
       });
 
@@ -98,6 +98,60 @@
     }
 
     return data;
+  } 
+
+
+  const updateQuiz = async (id, quizName, description, questions, duration, category, difficulty) => {
+    const res = await fetch(`/api/quiz/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({ quizName, description, questions, duration, category, difficulty }),
+
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw Error(data.error);
+    }
+
+    return data;
+
   }
 
-  export { getQuizzes, createQuiz, deleteQuiz, getAllQuestionsOfQuiz, getQuizzesByCategoryAndDifficulty };
+  const getQuizById = async (id) => {
+    try {
+      console.log(`Fetching quiz with ID: ${id}`);
+      
+      const res = await fetch(`/api/quiz/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        console.error("Error fetching quiz:", data.error);
+        throw new Error(data.error); // Maintain the original throw behavior
+      }
+  
+      console.log("Successfully fetched quiz:", data);
+      return data;
+  
+    } catch (error) {
+      console.error("An error occurred in getQuizById:", error.message);
+      throw error; // Rethrow the error for further handling by the caller
+    }
+  };
+  
+
+
+
+
+  export { getQuizzes, createQuiz, deleteQuiz, getAllQuestionsOfQuiz, getQuizzesByCategoryAndDifficulty, updateQuiz, getQuizById };
