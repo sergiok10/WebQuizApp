@@ -12,6 +12,7 @@ const Update = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    imageUrl: "",
     duration: 0,
     questions: [],
     category: "",
@@ -28,6 +29,7 @@ const Update = () => {
         setFormData({
           quizName: quiz.quizName,
           description: quiz.description,
+          imageUrl: quiz.imageUrl,
           duration: quiz.duration,
           category: quiz.category,
           difficulty: quiz.difficulty,
@@ -115,7 +117,7 @@ const Update = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const updatedQuiz = await updateQuiz(id, formData.quizName, formData.description, formData.questions, formData.duration, formData.category, formData.difficulty);
+      const updatedQuiz = await updateQuiz(id, formData.quizName, formData.description, formData.imageUrl, formData.questions, formData.duration, formData.category, formData.difficulty);
       setQuizzes(
         quizzes.map((quiz) => (quiz._id === id ? updatedQuiz : quiz))
       );
@@ -144,6 +146,15 @@ const Update = () => {
             placeholder="Quiz Name"
             className="input"
             value={formData.quizName}
+            onChange={handleInputChange}
+            autoFocus
+          />
+          <input
+            type="text"
+            name="quizImage"
+            placeholder="Quiz Image"
+            className="input"
+            value={formData.imageUrl}
             onChange={handleInputChange}
             autoFocus
           />

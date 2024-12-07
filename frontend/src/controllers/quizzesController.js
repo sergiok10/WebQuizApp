@@ -48,8 +48,8 @@
 
 
   /********************************************** Create Quiz  ******************************************************/
-  const createQuiz = async (quizName, questions, description, duration, category, difficulty, user) => {
-    if (!quizName || !questions || !description || !duration || !category || !difficulty) {
+  const createQuiz = async (quizName, questions, description, imageUrl, duration, category, difficulty, user) => {
+    if (!quizName || !questions || !description || !imageUrl || !duration || !category || !difficulty) {
       throw Error("Please fill in all fields");
     }
 
@@ -59,7 +59,7 @@
         "Content-Type": "application/json",
         "Authorization": `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify({ quizName, questions, description, duration, category, difficulty }),
+      body: JSON.stringify({ quizName, questions, description, imageUrl, duration, category, difficulty }),
     });
 
       const data = await res.json();
@@ -101,14 +101,14 @@
   } 
 
 
-  const updateQuiz = async (id, quizName, description, questions, duration, category, difficulty) => {
+  const updateQuiz = async (id, quizName, description, imageUrl, questions, duration, category, difficulty) => {
     const res = await fetch(`/api/quiz/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify({ quizName, description, questions, duration, category, difficulty }),
+      body: JSON.stringify({ quizName, description, imageUrl, questions, duration, category, difficulty }),
 
     });
 

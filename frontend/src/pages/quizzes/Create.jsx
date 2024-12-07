@@ -14,6 +14,7 @@ const Create = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    imageUrl: "",
     duration: 0,
     questions: [],
     category: "", // Added category field
@@ -91,6 +92,7 @@ const Create = () => {
         formData.name,
         formData.questions,
         formData.description,
+        formData.imageUrl,
         formData.duration,
         formData.category, // Pass category
         formData.difficulty, // Pass difficulty
@@ -119,6 +121,15 @@ const Create = () => {
             placeholder="Quiz Name"
             className="input"
             value={formData.name}
+            onChange={handleInputChange}
+            autoFocus
+          />
+          <input
+            type="text"
+            name="imageUrl"
+            placeholder="Quiz Image"
+            className="input"
+            value={formData.imageUrl}
             onChange={handleInputChange}
             autoFocus
           />
@@ -160,8 +171,8 @@ const Create = () => {
               <option value="Science">Science</option>
               <option value="Math">Math</option>
               <option value="History">History</option>
-              <option value="Technology">Technology</option>
-              <option value="Literature">Literature</option>
+              <option value="Geography">Geography</option>
+              <option value="Tech">Technology</option>
               <option value="Games">Games</option>
             </select>
           </div>

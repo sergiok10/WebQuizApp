@@ -38,7 +38,7 @@ const Quiz = ({ quiz, onStartQuiz, highscore, children }) => {
         <a href="#">
           <img
             className="rounded-t-lg w-full h-48 object-cover"
-            src="/src/Assets/javascript.png"
+            src={quiz.imageUrl}
             alt={quiz.quizName}
           />
         </a>
